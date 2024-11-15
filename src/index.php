@@ -19,7 +19,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2024 Simple PHP Website</p>
+        <p>&copy; 2024 Simple PHP Website Shankar</p>
     </footer>
 </body>
 </html>
