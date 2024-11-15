@@ -19,7 +19,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2024 Simple PHP Website Shankar Changes</p>
+        <p>&copy; 2024 Simple PHP Website Shankar Changes 2.0</p>
     </footer>
 </body>
 </html>
