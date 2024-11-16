@@ -56,12 +56,8 @@ jobs:
             newgrp docker
           fi
           
-          # Pull the latest image from ECR
-          docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
-          
-          # Stop and remove any existing containers
-          docker stop php-app || true
-          docker rm php-app || true
-          
-          # Run the Docker container
-          docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
+          # Run Docker commands as the updated user
+          sudo -u $USER docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
+          sudo -u $USER docker stop php-app || true
+          sudo -u $USER docker rm php-app || true
+          sudo -u $USER docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
