@@ -38,7 +38,7 @@ jobs:
       run: |
         docker push ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
 
-    # Deploy to EC2
+    # Deploy to EC2 via SSH
     - name: SSH and Deploy
       uses: appleboy/ssh-action@v0.1.10
       with:
@@ -54,12 +54,18 @@ jobs:
             sudo systemctl enable docker
           fi
 
-          # Add the user to the docker group to avoid needing sudo
+          # Add the user to the docker group to avoid needing sudo for docker commands
           sudo usermod -aG docker ubuntu
 
-          # Log the user out of the Docker group (force the group to refresh)
-          # This works around the "newgrp" issue by forcing the SSH session to start with updated permissions.
-          su - ubuntu -c "docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest"
-          su - ubuntu -c "docker stop php-app || true"
-          su - ubuntu -c "docker rm php-app || true"
-          su - ubuntu -c "docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest"
+          # Refresh group membership to run docker commands as the user
+          newgrp docker <<EOF
+            # Pull the latest image from ECR
+            docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
+            
+            # Stop and remove any existing containers
+            docker stop php-app || true
+            docker rm php-app || true
+
+            # Run the Docker container
+            docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
+          EOF
