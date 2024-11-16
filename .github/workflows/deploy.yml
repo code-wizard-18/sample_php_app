@@ -1,0 +1,44 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Login to AWS ECR
+    - name: Login to ECR
+      id: ecr-login
+      uses: aws-actions/amazon-ecr-login@v1
+
+    # Build Docker image
+    - name: Build Docker Image
+      run: |
+        docker build -t php-sample-app .
+        docker tag php-sample-app:latest ${{ steps.ecr-login.outputs.registry }}/php-sample-app:latest
+
+    # Push image to ECR
+    - name: Push to ECR
+      run: |
+        docker push ${{ steps.ecr-login.outputs.registry }}/php-sample-app:latest
+
+    # Deploy to EC2
+    - name: SSH and Deploy
+      uses: appleboy/ssh-action@v0.5.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull ${{ steps.ecr-login.outputs.registry }}/php-sample-app:latest
+          docker stop php-app || true
+          docker rm php-app || true
+          docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/php-sample-app:latest
