@@ -54,12 +54,12 @@ jobs:
             sudo systemctl enable docker
           fi
 
-          # Add the user to the docker group and give access to Docker socket
+          # Add the user to the docker group to avoid needing sudo
           sudo usermod -aG docker ubuntu
-          newgrp docker
 
-          # Run Docker commands as the updated user
-          docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
-          docker stop php-app || true
-          docker rm php-app || true
-          docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
+          # Log the user out of the Docker group (force the group to refresh)
+          # This works around the "newgrp" issue by forcing the SSH session to start with updated permissions.
+          su - ubuntu -c "docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest"
+          su - ubuntu -c "docker stop php-app || true"
+          su - ubuntu -c "docker rm php-app || true"
+          su - ubuntu -c "docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest"
