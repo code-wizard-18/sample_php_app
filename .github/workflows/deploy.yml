@@ -30,13 +30,13 @@ jobs:
     # Build Docker image
     - name: Build Docker Image
       run: |
-        docker build -t php-sample-app .
-        docker tag php-sample-app:latest ${{ steps.ecr-login.outputs.registry }}/php-sample-app:latest
+        docker build -t sample-php-app .
+        docker tag sample-php-app:latest ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
 
     # Push image to ECR
     - name: Push to ECR
       run: |
-        docker push ${{ steps.ecr-login.outputs.registry }}/php-sample-app:latest
+        docker push ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
 
     # Deploy to EC2
     - name: SSH and Deploy
@@ -46,7 +46,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          docker pull ${{ steps.ecr-login.outputs.registry }}/php-sample-app:latest
+          docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
           docker stop php-app || true
           docker rm php-app || true
-          docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/php-sample-app:latest
+          docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
