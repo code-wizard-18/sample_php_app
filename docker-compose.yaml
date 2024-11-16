@@ -1,11 +1,31 @@
-version: '3.8'
+# Deploy to EC2 using SSH
+- name: SSH and Deploy
+  uses: appleboy/ssh-action@v0.1.10
+  with:
+    host: ${{ secrets.EC2_HOST }}
+    username: ubuntu
+    key: ${{ secrets.EC2_SSH_KEY }}
+    script: |
+      # Ensure Docker is installed and running on EC2 instance
+      if ! command -v docker &> /dev/null; then
+        echo "Docker not found, installing..."
+        sudo apt update && sudo apt install -y docker.io
+        sudo systemctl start docker
+        sudo systemctl enable docker
+      fi
 
-services:
-  php-apache:
-    build: .
-    container_name: simple_php_website
-    ports:
-      - "8080:80" # Map port 8080 on your host to port 80 in the container
-    volumes:
-      - ./src:/var/www/html # Mount the project files for live updates
-    restart: always
+      # Add the user to the docker group to avoid needing sudo for docker commands
+      sudo usermod -aG docker ubuntu
+
+      # Refresh group membership without requiring a password
+      newgrp docker <<EOF
+        # Pull the latest image from ECR
+        docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
+        
+        # Stop and remove any existing containers
+        docker stop php-app || true
+        docker rm php-app || true
+
+        # Run the Docker container
+        docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
+      EOF
