@@ -52,12 +52,14 @@ jobs:
             sudo apt update && sudo apt install -y docker.io
             sudo systemctl start docker
             sudo systemctl enable docker
-            sudo usermod -aG docker $USER
-            newgrp docker
           fi
-          
+
+          # Add the user to the docker group and give access to Docker socket
+          sudo usermod -aG docker ubuntu
+          newgrp docker
+
           # Run Docker commands as the updated user
-          sudo -u $USER docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
-          sudo -u $USER docker stop php-app || true
-          sudo -u $USER docker rm php-app || true
-          sudo -u $USER docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
+          docker pull ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
+          docker stop php-app || true
+          docker rm php-app || true
+          docker run -d --name php-app -p 80:80 ${{ steps.ecr-login.outputs.registry }}/sample-php-app:latest
