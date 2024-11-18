@@ -25,16 +25,16 @@ jobs:
           # Update package list and install necessary packages
           sudo apt update
           sudo apt install -y apache2 php libapache2-mod-php git unzip
-
-          # Navigate to the web root directory
-          DEPLOY_DIR=/sample_php_app
+          
+          # Define deployment directory
+          DEPLOY_DIR=/var/www/html
           sudo rm -rf $DEPLOY_DIR/*
           sudo chown -R ubuntu:ubuntu $DEPLOY_DIR
           cd $DEPLOY_DIR
-
+          
           # Clone the latest code from the GitHub repository
           if [ ! -d ".git" ]; then
-            git https://github.com/code-wizard-18/sample_php_app.git .
+            git clone https://github.com/code-wizard-18/sample_php_app.git .
           else
             git reset --hard
             git pull origin dev
