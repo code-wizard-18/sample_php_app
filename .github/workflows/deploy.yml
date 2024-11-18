@@ -34,7 +34,7 @@ jobs:
 
           # Clone the latest code from the GitHub repository
           if [ ! -d ".git" ]; then
-            git clone https://github.com/<your-github-username>/<your-repo-name>.git .
+            git https://github.com/code-wizard-18/sample_php_app.git .
           else
             git reset --hard
             git pull origin dev
