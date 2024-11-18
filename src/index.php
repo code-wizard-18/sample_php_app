@@ -19,7 +19,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2024 Simple PHP Website Shankar Changes 5.0 nithish kumar !!!!!!!!</p>
+        <p>&copy; 2024 Simple PHP Website Shankar Changes 6.0 changes</p>
     </footer>
 </body>
 </html>
