@@ -27,7 +27,7 @@ jobs:
           sudo apt install -y apache2 php libapache2-mod-php git unzip
 
           # Navigate to the web root directory
-          DEPLOY_DIR=/var/www/html
+          DEPLOY_DIR=sample_php_app
           sudo rm -rf $DEPLOY_DIR/*
           sudo chown -R ubuntu:ubuntu $DEPLOY_DIR
           cd $DEPLOY_DIR
