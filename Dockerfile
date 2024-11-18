@@ -2,7 +2,7 @@
 FROM php:8.2-apache
 
 # Copy project files into the container
-COPY /src /var/www/html/
+COPY / /var/www/html/
 
 # Set the correct file permissions
 RUN chown -R www-data:www-data /var/www/html \
