@@ -7,7 +7,7 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to Our Simple PHP Website</h1>
+        <h1>Welcome to Our Simple PHP Website ...</h1>
         <nav>
             <a href="index.php">Home</a> | 
         </nav>
