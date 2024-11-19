@@ -7,7 +7,7 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to Our Simple PHP Website ...</h1>
+        <h1>Welcome to Our Simple PHP Website ... deploying changes</h1>
         <nav>
             <a href="index.php">Home</a> | 
         </nav>
@@ -19,7 +19,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2024 Simple PHP Website Shankar Changes 7.0 changes</p>
+        <p>&copy; 2024 Simple PHP Website Shankar Changes 8.0 changes</p>
     </footer>
 </body>
 </html>
